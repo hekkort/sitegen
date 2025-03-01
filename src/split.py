@@ -1,4 +1,4 @@
-from textnode import TextType, TextNode
+from textnode import TextType, TextNode, BlockType
 import re
 
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
@@ -13,7 +13,7 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                     if index % 2 == 0:
                         node_list.append(TextNode(item, o.text_type))
                     else:
-                            node_list.append(TextNode(item, text_type))
+                        node_list.append(TextNode(item, text_type))
         else:
             node_list.append(o)
 
@@ -93,8 +93,61 @@ def text_to_textnodes(text):
 
     return nodes
 
+def markdown_to_blocks(markdown):
+
+    raw_blocks = markdown.split("\n\n")
+
+    blocks = []
+    
+    for block in raw_blocks:
+        cleaned = block.strip()
+        if cleaned:
+            blocks.append(cleaned)
+    
+    return blocks
+
+def block_to_block_type(markdown_block):
+    block = markdown_block
+    heading_pattern = r'^#{1,6} '
+    if re.match(heading_pattern, block):
+        return BlockType.HEADING
+    code_block_pattern = r'^```[\s\S]*```$'
+    if re.match(code_block_pattern, block):
+        return BlockType.CODE
+    quote_block_pattern = r'^>'
+    if re.match(quote_block_pattern, block):
+        return BlockType.QUOTE
+    unordered_list_block_pattern = r'^- '
+    if re.match(unordered_list_block_pattern, block):
+        return BlockType.UNORDERED_LIST
+    ordered_list_block_pattern = r'^1. '
+    if re.match(ordered_list_block_pattern, block):
+        return BlockType.ORDERED_LIST
+    return BlockType.PARAGRAPH
+
+def markdown_to_html_node(markdown):
+    pass
 
 
+heading = "# this is a heading"
+code = "```this is code```"
+quote = (">this is a quote"
+         ">and this as well")
+unordered_list = ("- unordered list"
+                  "- this is another line in the unordered list")
+ordered_list = ("1. this is an ordered list"
+                "2. this is another line in the ordered list")
+paragraph = "dit is gewoon een stukkie"
+
+print(block_to_block_type(heading))
+
+print(block_to_block_type(code))
+print(block_to_block_type(quote))
+print(block_to_block_type(unordered_list))
+print(block_to_block_type(ordered_list))
+print(block_to_block_type(paragraph))
+
+'''
 moretext = [TextNode("This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)", 
                 TextType.NORMAL)]
 
@@ -110,4 +163,19 @@ website = TextNode(
 
 text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
 
-print(text_to_textnodes(text))
+
+
+text_block = ("# This is a heading\n\n     "
+
+"   This is a paragraph of text. It has some **bold** and _italic_ words inside of it.\n\n   "
+
+"    - This is the first list item in a list block\n"
+"- This is a list item\n"
+"- This is another list item\n\n\n\n\n\n\n\n\n\n   ")
+
+
+print(markdown_to_blocks(text_block))
+#print(text_block)
+#print(split_text_block[2])
+#print(text_to_textnodes(text))
+'''

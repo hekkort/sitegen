@@ -1,6 +1,14 @@
 from enum import Enum
 from leafnode import LeafNode
 
+class BlockType(Enum):
+    PARAGRAPH = "paragraph"
+    HEADING = "heading"
+    CODE = "code"
+    QUOTE = "quote"
+    UNORDERED_LIST = "unordered_list"
+    ORDERED_LIST = "ordered_list"
+
 class TextType(Enum):
     NORMAL = "Normal"
     BOLD = "Bold"
@@ -39,6 +47,7 @@ def text_node_to_html_node(text_node):
         return LeafNode("img", "", img_dict)
     else:
         raise Exception("no valid enum")
+    
 
 #print(text_node_to_html_node(TextNode("hallo", TextType.BOLD, "doei.com")))
 #print(text_node_to_html_node(TextNode("a", TextType.LINKS, "doei.com")))
